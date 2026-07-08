@@ -1,0 +1,44 @@
+========================================================================
+HAMILTONIAN vs HYBRID HAMILTONIAN — 10M STEP COMPARISON
+========================================================================
+Board: 12x12 | Cycle length: 144 | Seed: 42
+Date: 2026-07-08
+
+========================================================================
+SUMMARY
+========================================================================
+
+| Metric                  | Pure Hamiltonian (5) | Hybrid Hamiltonian (6) | Delta        |
+|-------------------------|----------------------|------------------------|--------------|
+| Total steps             | 10,000,000           | 10,000,000             | —            |
+| Total episodes          | 1,962                | 2,276                  | +314 (+16%)  |
+| Avg steps/episode       | 5,096.8              | 4,393.7                | -703 (-14%)  |
+| Best score              | 141                  | 141                    | same         |
+| Last-100 avg score      | 141.000              | 141.000                | same         |
+| Fallback moves          | 0                    | 0                      | same         |
+| Death reason            | board_full (100%)    | board_full (100%)      | same         |
+| Duration                | 74.6s                | 169.9s                 | +95.3s       |
+| Throughput              | 134,008 steps/s      | 58,842 steps/s         | slower*      |
+
+* Hybrid is slower in wall-clock time because it evaluates shortcut
+  candidates each step, but completes more games in the same step budget.
+
+========================================================================
+HYBRID MOVE BREAKDOWN
+========================================================================
+  Shortcut moves:  1,012,713  (10.1% of steps)
+  Cycle moves:     8,987,287  (89.9% of steps)
+  Fallback moves:  0
+
+========================================================================
+KEY TAKEAWAY
+========================================================================
+Both agents achieve perfect board fills (score 141) with zero deaths.
+
+Hybrid completes ~16% more episodes in 10M steps by cutting ~14% off
+average episode length via safe shortcuts toward food.
+
+Pure Hamiltonian log:  models/hamiltonian_10m_run.log
+Hybrid log:           models/hybrid_hamiltonian_10m_run.log
+
+========================================================================

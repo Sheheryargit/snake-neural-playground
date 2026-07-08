@@ -1,0 +1,49 @@
+========================================================================
+HAMILTONIAN CYCLE RUN
+========================================================================
+Started at:        2026-07-08 06:58:48
+Target steps:      10,000,000
+Board size:        12x12
+Cycle length:      144
+Seed:              42
+========================================================================
+
+[  500,000/10,000,000 steps] ep=    98 | best=141 (ep 1) | avg100 score=141.00 reward=1494.32 len=5082.3 | fallbacks=0 | 131,826 steps/s
+[1,000,000/10,000,000 steps] ep=   196 | best=141 (ep 1) | avg100 score=141.00 reward=1495.03 len=5071.6 | fallbacks=0 | 132,557 steps/s
+[1,500,000/10,000,000 steps] ep=   295 | best=141 (ep 1) | avg100 score=141.00 reward=1494.72 len=5058.8 | fallbacks=0 | 133,068 steps/s
+[2,000,000/10,000,000 steps] ep=   393 | best=141 (ep 1) | avg100 score=141.00 reward=1494.59 len=5093.9 | fallbacks=0 | 133,344 steps/s
+[2,500,000/10,000,000 steps] ep=   492 | best=141 (ep 1) | avg100 score=141.00 reward=1494.58 len=5080.0 | fallbacks=0 | 133,479 steps/s
+[3,000,000/10,000,000 steps] ep=   590 | best=141 (ep 1) | avg100 score=141.00 reward=1494.30 len=5123.9 | fallbacks=0 | 133,582 steps/s
+[3,500,000/10,000,000 steps] ep=   687 | best=141 (ep 1) | avg100 score=141.00 reward=1494.44 len=5113.1 | fallbacks=0 | 133,699 steps/s
+[4,000,000/10,000,000 steps] ep=   786 | best=141 (ep 1) | avg100 score=141.00 reward=1494.60 len=5094.4 | fallbacks=0 | 133,851 steps/s
+[4,500,000/10,000,000 steps] ep=   885 | best=141 (ep 1) | avg100 score=141.00 reward=1494.76 len=5051.6 | fallbacks=0 | 133,933 steps/s
+[5,000,000/10,000,000 steps] ep=   983 | best=141 (ep 1) | avg100 score=141.00 reward=1494.44 len=5092.9 | fallbacks=0 | 134,008 steps/s
+[5,500,000/10,000,000 steps] ep= 1,080 | best=141 (ep 1) | avg100 score=141.00 reward=1494.29 len=5134.4 | fallbacks=0 | 134,151 steps/s
+[6,000,000/10,000,000 steps] ep= 1,177 | best=141 (ep 1) | avg100 score=141.00 reward=1494.06 len=5140.6 | fallbacks=0 | 134,201 steps/s
+[6,500,000/10,000,000 steps] ep= 1,275 | best=141 (ep 1) | avg100 score=141.00 reward=1494.48 len=5099.9 | fallbacks=0 | 134,260 steps/s
+[7,000,000/10,000,000 steps] ep= 1,374 | best=141 (ep 1) | avg100 score=141.00 reward=1494.69 len=5078.3 | fallbacks=0 | 134,275 steps/s
+[7,500,000/10,000,000 steps] ep= 1,472 | best=141 (ep 1) | avg100 score=141.00 reward=1494.55 len=5079.2 | fallbacks=0 | 134,293 steps/s
+[8,000,000/10,000,000 steps] ep= 1,570 | best=141 (ep 1) | avg100 score=141.00 reward=1494.47 len=5110.3 | fallbacks=0 | 134,282 steps/s
+[8,500,000/10,000,000 steps] ep= 1,668 | best=141 (ep 1) | avg100 score=141.00 reward=1494.61 len=5087.5 | fallbacks=0 | 134,193 steps/s
+[9,000,000/10,000,000 steps] ep= 1,767 | best=141 (ep 1) | avg100 score=141.00 reward=1494.76 len=5065.2 | fallbacks=0 | 134,020 steps/s
+[9,500,000/10,000,000 steps] ep= 1,865 | best=141 (ep 1) | avg100 score=141.00 reward=1494.33 len=5108.6 | fallbacks=0 | 134,046 steps/s
+[10,000,000/10,000,000 steps] ep= 1,962 | best=141 (ep 1) | avg100 score=141.00 reward=1494.29 len=5122.5 | fallbacks=0 | 134,009 steps/s
+
+========================================================================
+RUN COMPLETE
+========================================================================
+Finished at:       2026-07-08 07:00:02
+Duration:          74.6s (1.2 min)
+Total steps:       10,000,000
+Total episodes:    1,962
+Avg steps/episode: 5096.8
+Throughput:        134,008 steps/sec
+
+Scores:
+  best score:      141 (episode 1)
+  last-100 avg:    141.000
+  fallback moves:  0
+
+Death reasons (all episodes):
+  board_full      1,962  (100.0%)
+========================================================================

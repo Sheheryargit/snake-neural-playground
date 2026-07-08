@@ -1,0 +1,54 @@
+========================================================================
+DQN TRAINING RUN
+========================================================================
+Started at:        2026-07-08 06:23:21
+Target steps:      1,000,000
+Board size:        12x12
+
+Hyperparameters:
+  epsilon start:          1.0
+  epsilon_decay:          0.995  (per learn step)
+  min_epsilon:            0.05
+  gamma:                  0.9
+  learning rate:          0.001
+  batch size:             64
+  memory size:            100,000
+  target update every:    1000 training steps
+  seed:                   42
+========================================================================
+
+[  100,000/1,000,000 steps] ep=   825 | epsilon=0.0500 | memory=100,000 | best=37 (ep 292) | avg100 score=13.22 reward=125.89 len=123.8 | loss=5.3584 | 2,187 steps/s
+[  200,000/1,000,000 steps] ep= 1,658 | epsilon=0.0500 | memory=100,000 | best=40 (ep 1039) | avg100 score=11.97 reward=112.98 len=114.3 | loss=5.4181 | 2,059 steps/s
+[  300,000/1,000,000 steps] ep= 2,488 | epsilon=0.0500 | memory=100,000 | best=40 (ep 1039) | avg100 score=11.50 reward=108.12 len=107.3 | loss=5.4111 | 2,020 steps/s
+[  400,000/1,000,000 steps] ep= 3,334 | epsilon=0.0500 | memory=100,000 | best=44 (ep 2998) | avg100 score=12.31 reward=116.46 len=118.2 | loss=5.7638 | 2,001 steps/s
+[  500,000/1,000,000 steps] ep= 4,221 | epsilon=0.0500 | memory=100,000 | best=44 (ep 2998) | avg100 score=12.23 reward=115.55 len=116.6 | loss=5.6137 | 1,983 steps/s
+[  600,000/1,000,000 steps] ep= 5,089 | epsilon=0.0500 | memory=100,000 | best=44 (ep 2998) | avg100 score=12.28 reward=116.11 len=116.6 | loss=5.0700 | 1,975 steps/s
+[  700,000/1,000,000 steps] ep= 5,928 | epsilon=0.0500 | memory=100,000 | best=44 (ep 2998) | avg100 score=13.04 reward=124.02 len=124.2 | loss=5.4243 | 1,967 steps/s
+[  800,000/1,000,000 steps] ep= 6,794 | epsilon=0.0500 | memory=100,000 | best=44 (ep 2998) | avg100 score=12.26 reward=115.89 len=114.4 | loss=5.7904 | 1,951 steps/s
+[  900,000/1,000,000 steps] ep= 7,651 | epsilon=0.0500 | memory=100,000 | best=44 (ep 2998) | avg100 score=12.43 reward=117.76 len=119.3 | loss=5.6148 | 1,950 steps/s
+[1,000,000/1,000,000 steps] ep= 8,480 | epsilon=0.0500 | memory=100,000 | best=44 (ep 2998) | avg100 score=13.11 reward=124.67 len=127.2 | loss=5.2348 | 1,953 steps/s
+
+========================================================================
+TRAINING COMPLETE
+========================================================================
+Finished at:       2026-07-08 06:31:53
+Duration:          511.9s (8.5 min)
+Total steps:       1,000,000
+Total episodes:    8,480
+Avg steps/episode: 117.9
+Throughput:        1,953 steps/sec
+
+Scores:
+  best score:      44 (episode 2998)
+  last-100 avg:    13.110
+
+Final epsilon:     0.050000
+Replay memory:     100,000
+Training steps:    999,937
+
+Death reasons (all episodes):
+  collision       8,480  (100.0%)
+========================================================================
+Model save path:   models/dqn_11_state.pt
+  training_steps: 1,000,000
+  saved_at:       2026-07-08 06:31:53

@@ -1,0 +1,39 @@
+========================================================================
+HAMILTONIAN CYCLE RUN
+========================================================================
+Started at:        2026-07-08 06:49:00
+Target steps:      1,000,000
+Board size:        12x12
+Cycle length:      144
+Seed:              42
+========================================================================
+
+[  100,000/1,000,000 steps] ep=    20 | best=141 (ep 1) | avg100 score=141.00 reward=1495.42 len=4996.8 | fallbacks=0 | 137,133 steps/s
+[  200,000/1,000,000 steps] ep=    39 | best=141 (ep 1) | avg100 score=141.00 reward=1494.58 len=5057.1 | fallbacks=0 | 137,841 steps/s
+[  300,000/1,000,000 steps] ep=    59 | best=141 (ep 1) | avg100 score=141.00 reward=1494.77 len=5046.6 | fallbacks=0 | 137,426 steps/s
+[  400,000/1,000,000 steps] ep=    78 | best=141 (ep 1) | avg100 score=141.00 reward=1494.47 len=5067.2 | fallbacks=0 | 137,838 steps/s
+[  500,000/1,000,000 steps] ep=    98 | best=141 (ep 1) | avg100 score=141.00 reward=1494.32 len=5082.3 | fallbacks=0 | 138,272 steps/s
+[  600,000/1,000,000 steps] ep=   118 | best=141 (ep 1) | avg100 score=141.00 reward=1494.34 len=5086.6 | fallbacks=0 | 138,068 steps/s
+[  700,000/1,000,000 steps] ep=   137 | best=141 (ep 1) | avg100 score=141.00 reward=1494.60 len=5076.8 | fallbacks=0 | 138,083 steps/s
+[  800,000/1,000,000 steps] ep=   157 | best=141 (ep 1) | avg100 score=141.00 reward=1494.52 len=5087.9 | fallbacks=0 | 138,086 steps/s
+[  900,000/1,000,000 steps] ep=   177 | best=141 (ep 1) | avg100 score=141.00 reward=1494.75 len=5080.8 | fallbacks=0 | 138,117 steps/s
+[1,000,000/1,000,000 steps] ep=   196 | best=141 (ep 1) | avg100 score=141.00 reward=1495.03 len=5071.6 | fallbacks=0 | 138,084 steps/s
+
+========================================================================
+RUN COMPLETE
+========================================================================
+Finished at:       2026-07-08 06:49:07
+Duration:          7.2s (0.1 min)
+Total steps:       1,000,000
+Total episodes:    196
+Avg steps/episode: 5102.0
+Throughput:        138,083 steps/sec
+
+Scores:
+  best score:      141 (episode 1)
+  last-100 avg:    141.000
+  fallback moves:  0
+
+Death reasons (all episodes):
+  board_full        196  (100.0%)
+========================================================================

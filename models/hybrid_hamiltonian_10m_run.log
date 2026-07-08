@@ -1,0 +1,54 @@
+========================================================================
+HYBRID HAMILTONIAN RUN
+========================================================================
+Started at:        2026-07-08 06:58:47
+Target steps:      10,000,000
+Board size:        12x12
+Cycle length:      144
+Min tail gap:      4
+Seed:              42
+========================================================================
+
+[  500,000/10,000,000 steps] ep=   113 | best=141 (ep 1) | avg100 score=141.00 reward=1500.55 len=4423.8 | shortcuts=50,875 | cycle=449,125 | fallbacks=0 | 58,299 steps/s
+[1,000,000/10,000,000 steps] ep=   228 | best=141 (ep 1) | avg100 score=141.00 reward=1501.71 len=4318.0 | shortcuts=101,273 | cycle=898,727 | fallbacks=0 | 58,474 steps/s
+[1,500,000/10,000,000 steps] ep=   341 | best=141 (ep 1) | avg100 score=141.00 reward=1500.80 len=4403.9 | shortcuts=151,680 | cycle=1,348,320 | fallbacks=0 | 58,531 steps/s
+[2,000,000/10,000,000 steps] ep=   453 | best=141 (ep 1) | avg100 score=141.00 reward=1501.08 len=4443.5 | shortcuts=201,766 | cycle=1,798,234 | fallbacks=0 | 58,590 steps/s
+[2,500,000/10,000,000 steps] ep=   567 | best=141 (ep 1) | avg100 score=141.00 reward=1500.51 len=4418.7 | shortcuts=252,223 | cycle=2,247,777 | fallbacks=0 | 58,658 steps/s
+[3,000,000/10,000,000 steps] ep=   681 | best=141 (ep 1) | avg100 score=141.00 reward=1501.79 len=4356.7 | shortcuts=302,727 | cycle=2,697,273 | fallbacks=0 | 58,699 steps/s
+[3,500,000/10,000,000 steps] ep=   795 | best=141 (ep 1) | avg100 score=141.00 reward=1501.12 len=4400.1 | shortcuts=353,117 | cycle=3,146,883 | fallbacks=0 | 58,727 steps/s
+[4,000,000/10,000,000 steps] ep=   908 | best=141 (ep 1) | avg100 score=141.00 reward=1500.99 len=4394.1 | shortcuts=403,991 | cycle=3,596,009 | fallbacks=0 | 58,640 steps/s
+[4,500,000/10,000,000 steps] ep= 1,023 | best=141 (ep 1) | avg100 score=141.00 reward=1501.99 len=4353.5 | shortcuts=455,089 | cycle=4,044,911 | fallbacks=0 | 58,619 steps/s
+[5,000,000/10,000,000 steps] ep= 1,137 | best=141 (ep 1) | avg100 score=141.00 reward=1500.55 len=4405.1 | shortcuts=505,751 | cycle=4,494,249 | fallbacks=0 | 58,653 steps/s
+[5,500,000/10,000,000 steps] ep= 1,252 | best=141 (ep 1) | avg100 score=141.00 reward=1501.87 len=4328.7 | shortcuts=556,450 | cycle=4,943,550 | fallbacks=0 | 58,685 steps/s
+[6,000,000/10,000,000 steps] ep= 1,365 | best=141 (ep 1) | avg100 score=141.00 reward=1500.88 len=4440.7 | shortcuts=607,112 | cycle=5,392,888 | fallbacks=0 | 58,720 steps/s
+[6,500,000/10,000,000 steps] ep= 1,479 | best=141 (ep 1) | avg100 score=141.00 reward=1501.21 len=4395.2 | shortcuts=657,408 | cycle=5,842,592 | fallbacks=0 | 58,772 steps/s
+[7,000,000/10,000,000 steps] ep= 1,593 | best=141 (ep 1) | avg100 score=141.00 reward=1501.71 len=4373.5 | shortcuts=707,688 | cycle=6,292,312 | fallbacks=0 | 58,815 steps/s
+[7,500,000/10,000,000 steps] ep= 1,705 | best=141 (ep 1) | avg100 score=141.00 reward=1500.93 len=4427.0 | shortcuts=758,195 | cycle=6,741,805 | fallbacks=0 | 58,829 steps/s
+[8,000,000/10,000,000 steps] ep= 1,819 | best=141 (ep 1) | avg100 score=141.00 reward=1501.05 len=4396.7 | shortcuts=809,056 | cycle=7,190,944 | fallbacks=0 | 58,811 steps/s
+[8,500,000/10,000,000 steps] ep= 1,933 | best=141 (ep 1) | avg100 score=141.00 reward=1501.26 len=4418.7 | shortcuts=859,993 | cycle=7,640,007 | fallbacks=0 | 58,793 steps/s
+[9,000,000/10,000,000 steps] ep= 2,046 | best=141 (ep 1) | avg100 score=141.00 reward=1501.20 len=4374.2 | shortcuts=910,786 | cycle=8,089,214 | fallbacks=0 | 58,807 steps/s
+[9,500,000/10,000,000 steps] ep= 2,161 | best=141 (ep 1) | avg100 score=141.00 reward=1501.29 len=4367.1 | shortcuts=961,743 | cycle=8,538,257 | fallbacks=0 | 58,822 steps/s
+[10,000,000/10,000,000 steps] ep= 2,276 | best=141 (ep 1) | avg100 score=141.00 reward=1501.66 len=4335.9 | shortcuts=1,012,713 | cycle=8,987,287 | fallbacks=0 | 58,842 steps/s
+
+========================================================================
+RUN COMPLETE
+========================================================================
+Finished at:       2026-07-08 07:01:37
+Duration:          169.9s (2.8 min)
+Total steps:       10,000,000
+Total episodes:    2,276
+Avg steps/episode: 4393.7
+Throughput:        58,842 steps/sec
+
+Scores:
+  best score:      141 (episode 1)
+  last-100 avg:    141.000
+
+Moves:
+  shortcut moves:  1,012,713
+  cycle moves:     8,987,287
+  fallback moves:  0
+
+Death reasons (all episodes):
+  board_full      2,276  (100.0%)
+========================================================================

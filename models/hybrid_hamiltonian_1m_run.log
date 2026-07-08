@@ -1,0 +1,44 @@
+========================================================================
+HYBRID HAMILTONIAN RUN
+========================================================================
+Started at:        2026-07-08 06:57:24
+Target steps:      1,000,000
+Board size:        12x12
+Cycle length:      144
+Min tail gap:      4
+Seed:              42
+========================================================================
+
+[  100,000/1,000,000 steps] ep=    22 | best=141 (ep 1) | avg100 score=141.00 reward=1501.19 len=4404.8 | shortcuts=10,322 | cycle=89,678 | fallbacks=0 | 61,507 steps/s
+[  200,000/1,000,000 steps] ep=    45 | best=141 (ep 1) | avg100 score=141.00 reward=1501.36 len=4369.2 | shortcuts=20,719 | cycle=179,281 | fallbacks=0 | 61,327 steps/s
+[  300,000/1,000,000 steps] ep=    68 | best=141 (ep 1) | avg100 score=141.00 reward=1500.94 len=4399.0 | shortcuts=30,905 | cycle=269,095 | fallbacks=0 | 61,163 steps/s
+[  400,000/1,000,000 steps] ep=    91 | best=141 (ep 1) | avg100 score=141.00 reward=1500.90 len=4391.4 | shortcuts=40,805 | cycle=359,195 | fallbacks=0 | 61,026 steps/s
+[  500,000/1,000,000 steps] ep=   113 | best=141 (ep 1) | avg100 score=141.00 reward=1500.55 len=4423.8 | shortcuts=50,875 | cycle=449,125 | fallbacks=0 | 60,934 steps/s
+[  600,000/1,000,000 steps] ep=   135 | best=141 (ep 1) | avg100 score=141.00 reward=1500.29 len=4453.1 | shortcuts=60,935 | cycle=539,065 | fallbacks=0 | 60,834 steps/s
+[  700,000/1,000,000 steps] ep=   158 | best=141 (ep 1) | avg100 score=141.00 reward=1500.68 len=4425.2 | shortcuts=70,959 | cycle=629,041 | fallbacks=0 | 60,811 steps/s
+[  800,000/1,000,000 steps] ep=   181 | best=141 (ep 1) | avg100 score=141.00 reward=1500.99 len=4392.0 | shortcuts=80,981 | cycle=719,019 | fallbacks=0 | 60,765 steps/s
+[  900,000/1,000,000 steps] ep=   205 | best=141 (ep 1) | avg100 score=141.00 reward=1501.34 len=4373.3 | shortcuts=91,239 | cycle=808,761 | fallbacks=0 | 60,774 steps/s
+[1,000,000/1,000,000 steps] ep=   228 | best=141 (ep 1) | avg100 score=141.00 reward=1501.71 len=4318.0 | shortcuts=101,273 | cycle=898,727 | fallbacks=0 | 60,773 steps/s
+
+========================================================================
+RUN COMPLETE
+========================================================================
+Finished at:       2026-07-08 06:57:40
+Duration:          16.5s (0.3 min)
+Total steps:       1,000,000
+Total episodes:    228
+Avg steps/episode: 4386.0
+Throughput:        60,773 steps/sec
+
+Scores:
+  best score:      141 (episode 1)
+  last-100 avg:    141.000
+
+Moves:
+  shortcut moves:  101,273
+  cycle moves:     898,727
+  fallback moves:  0
+
+Death reasons (all episodes):
+  board_full        228  (100.0%)
+========================================================================

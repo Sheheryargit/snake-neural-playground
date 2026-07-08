@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Snake RL — Live Neural Network</title>
+<style>
+:root{
+  --bg:#07090F;--panel:#0A0E18;--line:#1C2538;
+  --txt:#DCE4F5;--sub:#8FA0C4;--dim:#5E6E92;
+  --cyan:#56CCFF;--gold:#FFC163;--ex:#3DE9B4;--in:#FF5D9E;
+  --warn:#F5BC42;--ok:#2ED49E;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.6}
+.wrap{max-width:1200px;margin:0 auto;padding:28px 20px 48px}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+h1{font-size:20px;font-weight:500;letter-spacing:.2px}
+.arch{font-size:13px;color:var(--sub);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;margin-top:4px}
+.hud{display:flex;gap:26px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.hud .k{font-size:11px;color:var(--dim);text-transform:lowercase;letter-spacing:.6px}
+.hud .v{font-size:15px;font-weight:500;color:var(--txt);min-width:100px}
+.badge{font-size:11px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);color:var(--sub)}
+.badge.live{border-color:var(--ok);color:var(--ok);box-shadow:0 0 12px rgba(46,212,158,.25)}
+.badge.wait{border-color:var(--warn);color:var(--warn)}
+.grid{display:grid;grid-template-columns:240px 1fr;gap:16px;margin-bottom:14px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.sidePanel{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:14px}
+.sidePanel h2{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px}
+#snakeC{display:block;width:100%;border-radius:10px;border:1px solid var(--line);background:#060A12}
+.modeRow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0 6px}
+.pill{font-size:11px;font-weight:600;padding:4px 11px;border-radius:999px;border:1px solid}
+.pill.train{border-color:var(--warn);color:var(--warn);background:rgba(245,188,66,.1)}
+.pill.auto{border-color:var(--ok);color:var(--ok);background:rgba(46,212,158,.1)}
+.stat{font-size:12px;color:var(--sub);font-family:ui-monospace,Menlo,monospace;margin:3px 0}
+.stat b{color:var(--txt)}
+.tabs{display:flex;gap:8px;margin-bottom:10px}
+.tab{font-size:12px;padding:7px 14px;border-radius:9px;border:1px solid var(--line);background:#0E1422;color:var(--sub);cursor:pointer;transition:border-color .15s,background .15s}
+.tab:hover{border-color:#35476E;background:#15203A}
+.tab.active{border-color:var(--cyan);color:var(--txt);background:rgba(86,204,255,.08)}
+.panel{position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel);transition:box-shadow .25s,border-color .25s}
+.panel.learnFlash{border-color:var(--ok);box-shadow:0 0 24px rgba(46,212,158,.35)}
+canvas.nn{display:block;width:100%;height:520px}
+.tip{display:none;position:absolute;padding:7px 11px;font-size:12px;line-height:1.5;color:#AFC0DE;background:rgba(12,17,28,.94);border:1px solid rgba(150,170,210,.32);border-radius:8px;pointer-events:none;max-width:220px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;z-index:10}
+.tip b{color:#E8EEFC;font-weight:500}
+.timeline{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.step{font-size:11px;padding:5px 11px;border-radius:8px;border:1px solid var(--line);color:var(--dim);transition:all .2s}
+.step.on{border-color:var(--cyan);color:var(--txt);background:rgba(86,204,255,.08);box-shadow:0 0 10px rgba(86,204,255,.15)}
+.qPanel{padding:18px;display:none}
+.qmeta{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin:0 0 14px;padding:12px;border:1px solid var(--line);border-radius:10px;background:#0C1220}
+.qmeta .item{font-size:11px;color:var(--dim);font-family:ui-monospace,Menlo,monospace}
+.qmeta .item b{display:block;color:var(--txt);font-size:12px;font-weight:500;margin-top:2px;word-break:break-all}
+.qmeta .wide{grid-column:1 / -1}
+.qmeta .highlight b{color:var(--gold)}
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:12px 0}
+.chip{font-size:11px;padding:7px 9px;border-radius:8px;border:1px solid var(--line);color:var(--sub);transition:all .15s}
+.chip.on{border-color:var(--cyan);color:var(--txt);background:rgba(86,204,255,.1);box-shadow:0 0 8px rgba(86,204,255,.12)}
+.qrow{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:12px}
+.qrow .lbl{width:76px;color:var(--sub)}
+.qrow.chosen .lbl{color:var(--gold);font-weight:600}
+.qrow .track{flex:1;height:10px;background:#101726;border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+.qrow .fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--gold));border-radius:4px;transition:width .25s}
+.qrow .val{width:52px;text-align:right;font-family:ui-monospace,Menlo,monospace;color:var(--txt)}
+.ctrl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+button{background:#101726;border:1px solid #26314D;color:#C9D6F2;font:inherit;font-size:13px;padding:7px 14px;border-radius:9px;cursor:pointer;transition:background .15s,border-color .15s,transform .1s}
+button:hover{background:#15203A;border-color:#35476E}
+button:active{transform:scale(.98)}
+.spdbox{display:flex;align-items:center;gap:10px;flex:1;min-width:200px}
+.spdbox label{font-size:13px;color:var(--sub)}
+input[type=range]{flex:1;accent-color:var(--cyan)}
+.spdo{font-size:13px;font-weight:500;min-width:42px;font-family:ui-monospace,Menlo,monospace}
+.hint{margin-top:10px;font-size:12px;color:var(--dim);max-width:900px}
+.sideQ{margin-top:12px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#0C1220;display:none}
+.sideQ h3{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
+.sideQ .stat{font-size:11px;margin:4px 0}
+.metrics{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:12px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--sub)}
+.metrics .v{color:var(--txt);font-size:14px;font-weight:500}
+.metrics .qOnly,.metrics .dqnOnly{display:block}
+.metrics.qMode .dqnOnly{display:none}
+.metrics.dqnMode .qOnly{display:none}
+.panelTitle{font-size:12px;color:var(--sub);margin-bottom:10px;font-weight:500}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>Snake RL — Live feedforward network</h1>
+    <div class="arch" id="archT">11 input → 128 relu → 128 relu → 3 Q-values · ~18.4k parameters · real forward passes</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <div class="hud">
+      <div><div class="k">step</div><div class="v" id="cycN">0</div></div>
+      <div><div class="k">top action</div><div class="v" id="predT">—</div></div>
+      <div><div class="k">epsilon</div><div class="v" id="epsHud">—</div></div>
+    </div>
+    <div class="badge wait" id="statusB">Waiting</div>
+  </div>
+</header>
+
+<div class="grid">
+  <div class="sidePanel">
+    <h2>Live Snake Board</h2>
+    <canvas id="snakeC" width="210" height="210"></canvas>
+    <div class="modeRow">
+      <span class="pill train" id="modePill">TRAINING</span>
+    </div>
+    <div class="stat">Score <b id="scoreV">0</b> · Steps <b id="stepV">0</b></div>
+    <div class="stat">Action <b id="actV">—</b></div>
+    <div class="stat" id="explV">—</div>
+    <div class="stat">Session best <b id="bestV">0</b></div>
+    <div class="sideQ" id="qSidebar">
+      <h3>Q-table lookup (.pkl)</h3>
+      <div class="stat">Model <b id="sideModel">—</b></div>
+      <div class="stat">Trained <b id="sideTrained">—</b></div>
+      <div class="stat">Table row <b id="sideEntry">—</b></div>
+      <div class="stat">Game move <b id="sideMove">—</b></div>
+      <div class="stat">Action <b id="sideAction">—</b></div>
+      <div class="stat">State key <b id="sideStateKey">—</b></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="tabs">
+      <button class="tab active" id="tabDqn" type="button">DQN Network</button>
+      <button class="tab" id="tabQ" type="button">Q-Learning Table</button>
+    </div>
+
+    <div class="panel" id="nnp">
+      <canvas class="nn" id="nnc"></canvas>
+      <div class="tip" id="nnt"></div>
+    </div>
+
+    <div class="panel qPanel" id="qPanel">
+      <div class="panelTitle">Live Q-table lookup — which .pkl row and move the agent is using</div>
+      <div class="qmeta" id="qMeta">
+        <div class="item">Model file<b id="qModelFile">—</b></div>
+        <div class="item">Trained steps (.pkl)<b id="qModelSteps">—</b></div>
+        <div class="item">Table entry (.pkl)<b id="qTableIndex">—</b></div>
+        <div class="item">Move this step<b id="qMoveStep">—</b></div>
+        <div class="item highlight">Chosen action<b id="qChosenMove">—</b></div>
+        <div class="item">Lookup state key<b id="qStateKey">—</b></div>
+        <div class="item wide">Decision<b id="qDecisionNote">—</b></div>
+      </div>
+      <div class="stat">Q-table entries: <b id="qtSize">0</b> live · <b id="qtLoaded">0</b> in .pkl</div>
+      <div class="qgrid" id="stateGrid"></div>
+      <div id="qBars"></div>
+    </div>
+
+    <div class="timeline">
+      <span class="step" data-phase="think">① Sense</span>
+      <span class="step" data-phase="think">② Think</span>
+      <span class="step" data-phase="act">③ Act</span>
+      <span class="step" data-phase="learn">④ Learn</span>
+    </div>
+  </div>
+</div>
+
+<div class="metrics dqnMode" id="metricsRow">
+  <div class="dqnOnly">Replay<div class="v" id="replayV">—</div></div>
+  <div class="dqnOnly">Loss<div class="v" id="lossV">—</div></div>
+  <div class="qOnly">Model file<div class="v" id="metricModel">—</div></div>
+  <div class="qOnly">Table row<div class="v" id="metricEntry">—</div></div>
+  <div class="qOnly">Move<div class="v" id="metricMove">—</div></div>
+  <div>Avg score<div class="v" id="avgV">—</div></div>
+</div>
+
+<div class="ctrl">
+  <button id="playB" type="button" aria-label="pause">Pause</button>
+  <button id="stepB" type="button">Step cycle</button>
+  <button id="reconB" type="button">Reconnect</button>
+  <button id="wtsB" type="button">Reload weights</button>
+  <div class="spdbox">
+    <label for="spd">Speed</label>
+    <input id="spd" type="range" min="0.4" max="2.4" step="0.1" value="1">
+    <span class="spdo" id="spdO">×1.0</span>
+  </div>
+</div>
+<p class="hint" id="hintText">Connect the Snake RL dashboard (agents 3 or 4), then each step streams live. Q-Learning shows which .pkl row and move (1–3) is referenced; DQN animates the neural forward pass.</p>
+</div>
+
+<script>
+(function(){
+/* ── Architecture: 11 → 128 → 128 → 3 (display top-16 hidden neurons) ── */
+var FULL=[11,128,128,3], TOP=16, OUT_LABELS=['STRAIGHT','RIGHT','LEFT'];
+var INPUT_LABELS=['Danger↑','Danger→','Danger←','Left','Right','Up','Down','Food←','Food→','Food↑','Food↓'];
+var DISPLAY=[[0,1,2,3,4,5,6,7,8,9,10],[],[],[0,1,2]];
+
+var canvas=document.getElementById('nnc');
+var panel=document.getElementById('nnp');
+var tip=document.getElementById('nnt');
+var ctx=canvas.getContext('2d');
+var base=document.createElement('canvas');
+var bctx=base.getContext('2d');
+var snakeC=document.getElementById('snakeC'), sctx=snakeC.getContext('2d');
+
+var Wn=[], Bn=[], acts=[], zs=[], pulses=[], pos=[], maxAbsW=[];
+var cw=0, ch=520, dpr=1, fam='sans-serif';
+var tc=0, last=0, playing=true, predShown=false;
+var hover=null, sticky=false, speed=1, weightsLoaded=false, lastPayload=null;
+var liveMode=false, lastStepId=-1, displayKey='', learnFlashUntil=0;
+var A_REV=[60,340,620,880], T0=[60,340,620], CYCLE=1100;
+var DEMO_A_REV=[480,1760,2920,4080], DEMO_T0=[480,1760,2920], DEMO_CYCLE=5000;
+var REDU=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function useLiveTiming(on){
+  if(on){
+    A_REV=[60,340,620,880]; T0=[60,340,620]; CYCLE=REDU?520:1100;
+  } else {
+    A_REV=DEMO_A_REV.slice(); T0=DEMO_T0.slice(); CYCLE=DEMO_CYCLE;
+  }
+}
+
+function clamp01(v){return v<0?0:(v>1?1:v)}
+function smooth(v){v=clamp01(v);return v*v*(3-2*v)}
+
+/* ── Weights from dashboard /weights endpoint ── */
+function loadWeights(w){
+  if(!w||!w.state_dict) return false;
+  var sd=w.state_dict, maps=[
+    ['network.0.weight','network.0.bias'],
+    ['network.2.weight','network.2.bias'],
+    ['network.4.weight','network.4.bias']
+  ];
+  Wn=[[],[],[]]; Bn=[[],[],[]]; maxAbsW=[];
+  for(var l=0;l<3;l++){
+    var W=sd[maps[l][0]], B=sd[maps[l][1]], wl=[], bl=[], mx=1e-6;
+    for(var j=0;j<W.length;j++){
+      wl.push(W[j]); bl.push(B[j]);
+      for(var i=0;i<W[j].length;i++){var aw=Math.abs(W[j][i]); if(aw>mx) mx=aw}
+    }
+    Wn[l]=wl; Bn[l]=bl; maxAbsW.push(mx);
+  }
+  weightsLoaded=true;
+  document.getElementById('archT').textContent='11 input → 128 relu → 128 relu → 3 Q-values · live DQN weights · real forward passes';
+  layout();
+  return true;
+}
+
+function fetchWeights(){
+  fetch('/weights').then(function(r){return r.json()}).then(loadWeights).catch(function(){});
+}
+
+/* ── Forward pass on displayed neuron subset ── */
+function forwardFromActivations(a){
+  acts=[
+    a.input.slice(),
+    (a.hidden1_top||[]).map(function(n){return n.value}),
+    (a.hidden2_top||[]).map(function(n){return n.value}),
+    a.output.slice()
+  ];
+  zs=[acts[0], acts[1], acts[2], acts[3]];
+}
+
+function setDisplayFromPayload(p){
+  var a=p.network.activations;
+  var h1=(a.hidden1_top||[]).map(function(n){return n.index});
+  var h2=(a.hidden2_top||[]).map(function(n){return n.index});
+  if(!h1.length) h1=Array.from({length:TOP},function(_,i){return i});
+  if(!h2.length) h2=Array.from({length:TOP},function(_,i){return i});
+  var key=JSON.stringify([h1,h2]);
+  if(key!==displayKey){
+    displayKey=key;
+    DISPLAY[1]=h1; DISPLAY[2]=h2;
+    layout();
+  }
+  forwardFromActivations(a);
+}
+
+function buildPulses(stepId){
+  pulses=[];
+  if(!weightsLoaded) return;
+  var live=liveMode;
+  var topN=live?5:2;
+  var seen={};
+  for(var l=0;l<3;l++){
+    var srcD=DISPLAY[l], dstD=DISPLAY[l+1], ap=acts[l]||[], list=[], mx=1e-6;
+    for(var dj=0;dj<dstD.length;dj++){
+      var j=dstD[dj], cs=[];
+      for(var si=0;si<srcD.length;si++){
+        var i=srcD[si], aval=ap[si]!==undefined?ap[si]:0;
+        var c=Wn[l][j][i]*aval;
+        if(Math.abs(c)>1e-5) cs.push([si,dj,i,c]);
+      }
+      cs.sort(function(p,q){return Math.abs(q[3])-Math.abs(p[3])});
+      for(var m=0;m<Math.min(topN,cs.length);m++){
+        var ac=Math.abs(cs[m][3]); if(ac>mx) mx=ac;
+        var pid=list.length;
+        list.push({l:l,si:cs[m][0],di:cs[m][1],i:cs[m][2],j:cs[m][3],c:cs[m][3],
+          jit:live?((stepId*17+pid*41+l*97)%100):Math.random()*280,
+          dur:live?(320+((pid*53)%140)):(460+Math.random()*220)});
+        seen[l+':'+cs[m][0]+':'+cs[m][1]]=1;
+      }
+    }
+    if(live&&l===0){
+      for(var si2=0;si2<srcD.length;si2++){
+        if((ap[si2]||0)<0.5) continue;
+        var best=-1, bestC=0;
+        for(var dj2=0;dj2<dstD.length;dj2++){
+          var j2=dstD[dj2], c2=Wn[l][j2][srcD[si2]]*(ap[si2]||1);
+          if(Math.abs(c2)>Math.abs(bestC)){bestC=c2;best=dj2}
+        }
+        if(best<0) continue;
+        var sk='0:'+si2+':'+best;
+        if(seen[sk]) continue;
+        seen[sk]=1;
+        var ac2=Math.abs(bestC); if(ac2>mx) mx=ac2;
+        list.push({l:0,si:si2,di:best,i:srcD[si2],j:dstD[best],c:bestC,
+          jit:(stepId*11+si2*29)%90, dur:360+(si2*37)%120});
+      }
+    }
+    for(var p=0;p<list.length;p++) list[p].s=Math.min(1,Math.abs(list[p].c)/mx);
+    pulses=pulses.concat(list);
+  }
+}
+
+function beginLiveStep(p){
+  if(!p||p.step_id===undefined||p.step_id===lastStepId) return false;
+  lastStepId=p.step_id;
+  liveMode=true;
+  useLiveTiming(true);
+  playing=true;
+  tc=REDU?CYCLE-40:0;
+  predShown=false;
+  lastPayload=p;
+  if(p.network&&p.network.activations) setDisplayFromPayload(p);
+  if(!weightsLoaded) fetchWeights();
+  buildPulses(p.step_id);
+  document.getElementById('cycN').textContent=p.step_id;
+  if(p.decision){
+    var qs=p.decision.q_values||[0,0,0], labs=p.decision.q_labels||OUT_LABELS;
+    var ci=labs.indexOf(p.decision.chosen_action);
+    if(ci<0) ci=0;
+    document.getElementById('predT').textContent=p.decision.chosen_action+' · Q '+(qs[ci]||0).toFixed(2);
+  }
+  if(p.training&&p.training.trained_this_tick) learnFlashUntil=performance.now()+500;
+  document.getElementById('playB').textContent='Pause';
+  return true;
+}
+
+function newCycle(){
+  useLiveTiming(false);
+  liveMode=false;
+  tc=REDU?4200:0; predShown=false;
+  if(lastPayload&&lastPayload.network) setDisplayFromPayload(lastPayload);
+  buildPulses(0);
+  document.getElementById('cycN').textContent='demo';
+  if(hover) updTip();
+}
+
+/* ── Layout & static base layer ── */
+function layout(){
+  cw=panel.clientWidth||900;
+  if(!cw) return;
+  dpr=window.devicePixelRatio||1;
+  canvas.width=Math.round(cw*dpr); canvas.height=Math.round(ch*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  base.width=canvas.width; base.height=canvas.height;
+  bctx.setTransform(dpr,0,0,dpr,0,0);
+  fam=getComputedStyle(document.body).fontFamily||'sans-serif';
+  pos=[[],[],[],[]];
+  var x0=62, x3=cw-96;
+  for(var l=0;l<4;l++){
+    var n=DISPLAY[l].length, col=x0+(x3-x0)*l/3, top=52, bot=ch-58;
+    var sp=n>1?(bot-top)/(n-1):0, arr=[];
+    for(var i=0;i<n;i++) arr.push({x:col,y:top+sp*i,idx:DISPLAY[l][i],li:i});
+    pos[l]=arr;
+  }
+  renderBase();
+}
+
+function renderBase(){
+  bctx.clearRect(0,0,cw,ch);
+  bctx.fillStyle='#0A0E18'; bctx.fillRect(0,0,cw,ch);
+  if(!weightsLoaded) return;
+  for(var l=0;l<3;l++){
+    var mx=maxAbsW[l]||1;
+    for(var dj=0;dj<pos[l+1].length;dj++){
+      var j=DISPLAY[l+1][dj], b=pos[l+1][dj], row=Wn[l][j];
+      for(var si=0;si<pos[l].length;si++){
+        var i=DISPLAY[l][si], a=pos[l][si];
+        var al=0.018+0.06*Math.abs(row[i])/mx;
+        bctx.strokeStyle='rgba(120,150,225,'+al.toFixed(3)+')';
+        bctx.lineWidth=0.6;
+        bctx.beginPath(); bctx.moveTo(a.x,a.y); bctx.lineTo(b.x,b.y); bctx.stroke();
+      }
+    }
+  }
+  var labels=cw<560
+    ?['in·11','h1·'+DISPLAY[1].length,'h2·'+DISPLAY[2].length,'Q·3']
+    :['input · 11 snake state','hidden 1 · top '+DISPLAY[1].length+' relu','hidden 2 · top '+DISPLAY[2].length+' relu','output · 3 Q-values'];
+  bctx.font='11px '+fam; bctx.fillStyle='rgba(165,180,215,.85)'; bctx.textAlign='center';
+  for(var l2=0;l2<4;l2++) if(pos[l2][0]) bctx.fillText(labels[l2],pos[l2][0].x,26);
+
+  /* Legend */
+  var ly=ch-18, lx=16; bctx.textAlign='left';
+  function dot(col){bctx.fillStyle=col;bctx.beginPath();bctx.arc(lx+4,ly-4,4,0,6.2832);bctx.fill();lx+=14}
+  function ln(col){bctx.strokeStyle=col;bctx.lineWidth=2;bctx.beginPath();bctx.moveTo(lx,ly-4);bctx.lineTo(lx+14,ly-4);bctx.stroke();lx+=20}
+  function lab(t){bctx.fillStyle='rgba(165,180,215,.9)';bctx.fillText(t,lx,ly);lx+=bctx.measureText(t).width+16}
+  dot('#56CCFF'); lab('hidden relu');
+  dot('#FFC163'); lab('Q output');
+  ln('#3DE9B4'); lab('excitatory');
+  ln('#FF5D9E'); lab('inhibitory');
+}
+
+/* ── Hover highlight ── */
+function drawHover(){
+  var l=hover.l, i=hover.i, p0=pos[l][i];
+  ctx.lineWidth=1.1;
+  if(l>0){
+    var srcD=DISPLAY[l-1], j=DISPLAY[l][i], ap=acts[l-1]||[], cs=[];
+    for(var k=0;k<srcD.length;k++) cs.push([k,(Wn[l-1][j][srcD[k]]||0)*(ap[k]||0)]);
+    cs.sort(function(p,q){return Math.abs(q[1])-Math.abs(p[1])});
+    var mx=Math.abs(cs[0]&&cs[0][1])||1e-6;
+    for(var m=0;m<Math.min(6,cs.length);m++){
+      var c=cs[m][1], q1=pos[l-1][cs[m][0]];
+      ctx.strokeStyle='rgba('+(c>=0?'61,233,180':'255,93,158')+','+(0.22+0.6*Math.abs(c)/mx).toFixed(3)+')';
+      ctx.beginPath();ctx.moveTo(q1.x,q1.y);ctx.lineTo(p0.x,p0.y);ctx.stroke();
+    }
+  }
+  if(l<3){
+    var j=DISPLAY[l][i], an=(acts[l]||[])[hover.li!==undefined?hover.li:i]||0, cs2=[];
+    for(var dj=0;dj<DISPLAY[l+1].length;dj++){
+      var jj=DISPLAY[l+1][dj];
+      cs2.push([dj,Wn[l][jj][j]*(an||1)]);
+    }
+    cs2.sort(function(p,q){return Math.abs(q[1])-Math.abs(p[1])});
+    var mx2=Math.abs(cs2[0]&&cs2[0][1])||1e-6;
+    for(var m2=0;m2<Math.min(6,cs2.length);m2++){
+      var c2=cs2[m2][1], q2=pos[l+1][cs2[m2][0]];
+      ctx.strokeStyle='rgba('+(c2>=0?'61,233,180':'255,93,158')+','+(0.22+0.6*Math.abs(c2)/mx2).toFixed(3)+')';
+      ctx.beginPath();ctx.moveTo(p0.x,p0.y);ctx.lineTo(q2.x,q2.y);ctx.stroke();
+    }
+  }
+  ctx.strokeStyle='rgba(230,240,255,.9)'; ctx.lineWidth=1.2;
+  ctx.beginPath();ctx.arc(p0.x,p0.y,10,0,6.2832);ctx.stroke();
+}
+
+/* ── Main draw (original pulse engine) ── */
+function draw(){
+  if(!cw) return;
+  ctx.clearRect(0,0,cw,ch);
+  ctx.drawImage(base,0,0,cw,ch);
+  var ef=tc>CYCLE-280?clamp01((CYCLE-tc)/280):1;
+  var now=performance.now();
+
+  /* Traveling pulses */
+  for(var p=0;p<pulses.length;p++){
+    var u=pulses[p], st=T0[u.l]+u.jit, pr=(tc-st)/u.dur;
+    if(pr<=0) continue;
+    var a=pos[u.l][u.si], b=pos[u.l+1][u.di];
+    var col=u.c>0?'61,233,180':'255,93,158';
+    var tr=Math.min(1,pr)*ef;
+    ctx.strokeStyle='rgba('+col+','+((0.04+0.10*u.s)*tr).toFixed(3)+')';
+    ctx.lineWidth=0.6+0.9*u.s;
+    ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+    if(pr<1){
+      var e=smooth(pr), e2=smooth(Math.max(0,pr-0.12));
+      var x1=a.x+(b.x-a.x)*e2, y1=a.y+(b.y-a.y)*e2;
+      var x2=a.x+(b.x-a.x)*e, y2=a.y+(b.y-a.y)*e;
+      ctx.globalCompositeOperation='lighter';
+      ctx.strokeStyle='rgba('+col+','+(0.25+0.45*u.s).toFixed(3)+')';
+      ctx.lineWidth=1+1.6*u.s;
+      ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+      ctx.fillStyle='rgba('+col+','+(0.5+0.5*u.s).toFixed(3)+')';
+      ctx.beginPath();ctx.arc(x2,y2,1.3+2*u.s,0,6.2832);ctx.fill();
+      ctx.fillStyle='rgba('+col+',0.10)';
+      ctx.beginPath();ctx.arc(x2,y2,(1.3+2*u.s)*3,0,6.2832);ctx.fill();
+      ctx.globalCompositeOperation='source-over';
+    }
+  }
+
+  if(hover) drawHover();
+
+  /* Neurons with layer reveal */
+  var R=[6.5,4.5,5,5.5];
+  var CORE=['185,205,255','86,204,255','86,204,255','255,193,99'];
+  for(var l=0;l<4;l++){
+    var rev=smooth((tc-A_REV[l])/320), arr=pos[l], av=acts[l]||[];
+    var mx=1e-6;
+    if(l<3){for(var q=0;q<av.length;q++) if(av[q]>mx) mx=av[q]}
+    else{for(var q3=0;q3<av.length;q3++){var ab=Math.abs(av[q3]);if(ab>mx)mx=ab}}
+    for(var i=0;i<arr.length;i++){
+      var v=av[i]||0;
+      var g=l===3?clamp01(Math.abs(v)/mx):clamp01(v/mx);
+      var sh=1+0.07*Math.sin(now*0.004+i*1.73+l*9);
+      var glow=clamp01((0.10+0.90*g*rev*sh)*Math.max(ef,0.18));
+      var pnt=arr[i], r=R[l];
+      ctx.globalCompositeOperation='lighter';
+      ctx.fillStyle='rgba('+CORE[l]+','+(0.05+0.28*glow).toFixed(3)+')';
+      ctx.beginPath();ctx.arc(pnt.x,pnt.y,r*(1.7+1.5*glow),0,6.2832);ctx.fill();
+      ctx.globalCompositeOperation='source-over';
+      ctx.fillStyle='rgba('+CORE[l]+','+(0.20+0.80*glow).toFixed(3)+')';
+      ctx.beginPath();ctx.arc(pnt.x,pnt.y,r,0,6.2832);ctx.fill();
+      ctx.strokeStyle='rgba(200,215,245,'+(0.10+0.25*glow).toFixed(3)+')';
+      ctx.lineWidth=0.6;
+      ctx.beginPath();ctx.arc(pnt.x,pnt.y,r,0,6.2832);ctx.stroke();
+      if(l===0&&v>=0.5){
+        var ring=clamp01(0.55+0.45*rev);
+        ctx.strokeStyle='rgba(230,240,255,'+ring.toFixed(3)+')';
+        ctx.lineWidth=1.6;
+        ctx.beginPath();ctx.arc(pnt.x,pnt.y,r+3.5,0,6.2832);ctx.stroke();
+      }
+      if(l===0){
+        ctx.font='9px '+fam; ctx.fillStyle='rgba(150,170,210,.75)'; ctx.textAlign='center';
+        ctx.fillText(INPUT_LABELS[i]||'', pnt.x, pnt.y-12);
+      }
+    }
+  }
+
+  /* Q-value bars on output layer */
+  var rev3=smooth((tc-A_REV[3])/320);
+  if(rev3>0){
+    var oa=acts[3]||[], best=-Infinity, bi=-1, mxq=1e-6;
+    for(var o=0;o<oa.length;o++){var ab=Math.abs(oa[o]);if(ab>mxq)mxq=ab;if(oa[o]>best){best=oa[o];bi=o}}
+    for(var o2=0;o2<oa.length;o2++){
+      var pt=pos[3][o2];
+      ctx.fillStyle='rgba(255,193,99,0.10)';
+      ctx.fillRect(pt.x+12,pt.y-3,56,6);
+      var frac=clamp01(Math.abs(oa[o2])/mxq)*rev3;
+      ctx.fillStyle='rgba(255,193,99,'+clamp01(0.15+0.75*frac*ef).toFixed(3)+')';
+      ctx.fillRect(pt.x+12,pt.y-3,56*frac,6);
+      ctx.font='9px '+fam; ctx.fillStyle='rgba(255,220,160,.85)'; ctx.textAlign='left';
+      ctx.fillText(OUT_LABELS[o2], pt.x+12, pt.y+14);
+    }
+    if(bi>=0){
+      var bp=pos[3][bi];
+      var chosenIdx=-1;
+      if(lastPayload&&lastPayload.decision){
+        chosenIdx=(lastPayload.decision.q_labels||OUT_LABELS).indexOf(lastPayload.decision.chosen_action);
+      }
+      if(chosenIdx<0) chosenIdx=bi;
+      var ringP=clamp01(rev3*ef);
+      for(var o3=0;o3<pos[3].length;o3++){
+        if(o3!==chosenIdx) continue;
+        var bp2=pos[3][o3];
+        ctx.strokeStyle='rgba(255,227,168,'+ringP.toFixed(3)+')';
+        ctx.lineWidth=1.6;
+        ctx.beginPath();ctx.arc(bp2.x,bp2.y,11,0,6.2832);ctx.stroke();
+      }
+    }
+    if(!predShown&&tc>=A_REV[3]+80&&bi>=0){
+      predShown=true;
+      var chosen=lastPayload&&lastPayload.decision?lastPayload.decision.chosen_action:OUT_LABELS[bi];
+      document.getElementById('predT').textContent=chosen+' · Q '+best.toFixed(2);
+    }
+  }
+}
+
+function updateTimeline(){
+  var steps=document.querySelectorAll('.timeline .step');
+  var trained=lastPayload&&lastPayload.training&&lastPayload.training.trained_this_tick;
+  steps.forEach(function(el,idx){
+    var on=false;
+    if(idx===0) on=tc>=0;
+    else if(idx===1) on=tc>=T0[0];
+    else if(idx===2) on=tc>=T0[2];
+    else if(idx===3) on=trained&&tc>=A_REV[3];
+    el.classList.toggle('on',on);
+  });
+}
+
+function frame(ts){
+  var dt=last?ts-last:16; last=ts;
+  if(dt>120) dt=120;
+  if(playing){
+    tc+=dt*speed;
+    if(!liveMode&&tc>=CYCLE) newCycle();
+  }
+  if(performance.now()<learnFlashUntil) panel.classList.add('learnFlash');
+  else panel.classList.remove('learnFlash');
+  updateTimeline();
+  draw();
+  requestAnimationFrame(frame);
+}
+
+/* ── Interaction ── */
+function pick(mx,my){
+  var bd=14,res=null;
+  for(var l=0;l<pos.length;l++){
+    for(var i=0;i<pos[l].length;i++){
+      var dx=pos[l][i].x-mx, dy=pos[l][i].y-my, d=Math.sqrt(dx*dx+dy*dy);
+      if(d<bd){bd=d;res={l:l,i:pos[l][i].li,idx:pos[l][i].idx}}
+    }
+  }
+  return res;
+}
+
+function updTip(){
+  if(!hover){tip.style.display='none';return}
+  var l=hover.l, i=hover.i, li=hover.li!==undefined?hover.li:i;
+  var a=(acts[l]||[])[li]||0, z=(zs[l]||[])[li]||0, t1,t2;
+  if(l===0){t1='input · '+INPUT_LABELS[i]; t2='value '+a.toFixed(2)}
+  else if(l<3){t1='hidden '+l+' · n'+hover.idx; t2='relu '+a.toFixed(2)}
+  else{t1=OUT_LABELS[i]+' action'; t2='Q '+a.toFixed(3)}
+  tip.innerHTML='<b>'+t1+'</b><br>'+t2;
+  var p=pos[l][li!==undefined?li:0]; if(!p) return;
+  var tx=p.x+14, ty=Math.max(8,p.y-42);
+  if(tx>cw-200) tx=p.x-196; if(tx<8) tx=8;
+  tip.style.left=tx+'px'; tip.style.top=ty+'px'; tip.style.display='block';
+}
+
+canvas.addEventListener('mousemove',function(e){
+  if(sticky) return;
+  var r=canvas.getBoundingClientRect();
+  hover=pick(e.clientX-r.left,e.clientY-r.top); updTip();
+});
+canvas.addEventListener('mouseleave',function(){if(!sticky){hover=null;updTip()}});
+canvas.addEventListener('click',function(e){
+  var r=canvas.getBoundingClientRect();
+  var h=pick(e.clientX-r.left,e.clientY-r.top);
+  if(h){hover=h;sticky=true}else{sticky=false;hover=null}
+  updTip();
+});
+
+/* ── Live data from dashboard ── */
+function drawSnake(p){
+  if(!p||!p.board) return;
+  var b=p.board,W=b.width,H=b.height,cell=snakeC.width/Math.max(W,H);
+  sctx.fillStyle='#060A12'; sctx.fillRect(0,0,snakeC.width,snakeC.height);
+  for(var y=0;y<H;y++) for(var x=0;x<W;x++){
+    if((x+y)%2===0){sctx.fillStyle='#0A1018';sctx.fillRect(x*cell,y*cell,cell,cell)}
+  }
+  if(b.food){
+    var fx=b.food[0]*cell+2,fy=b.food[1]*cell+2,pad=Math.max(2,cell*0.15);
+    sctx.fillStyle='#F54848'; sctx.beginPath();
+    sctx.arc(fx+cell/2-pad,fy+cell/2-pad,cell/2-pad,0,6.28);sctx.fill();
+  }
+  if(b.snake) b.snake.forEach(function(seg,i){
+    var pad=Math.max(1,cell*0.08);
+    sctx.fillStyle=i===0?'#50E68C':'#1E8054';
+    sctx.fillRect(seg[0]*cell+pad,seg[1]*cell+pad,cell-2*pad,cell-2*pad);
+    if(i===0){sctx.fillStyle='#0a1a10';sctx.fillRect(seg[0]*cell+cell*0.3,seg[1]*cell+cell*0.25,3,3);sctx.fillRect(seg[0]*cell+cell*0.55,seg[1]*cell+cell*0.25,3,3)}
+  });
+}
+
+function setAgentModeUI(p){
+  var isQ=p&&p.agent&&p.agent.type==='q_learning';
+  document.getElementById('qSidebar').style.display=isQ?'block':'none';
+  document.getElementById('metricsRow').className='metrics '+(isQ?'qMode':'dqnMode');
+  document.getElementById('hintText').textContent=isQ
+    ?'Q-Learning live: each step shows which .pkl file, table row, game move, and action (1–3) the agent looked up.'
+    :'DQN live: each step animates inputs → hidden → output. Pulses use real weights; chosen action matches the dashboard.';
+  if(isQ){
+    document.querySelector('h1').textContent='Snake RL — Live Q-Learning Table';
+    document.getElementById('archT').textContent='Q-Learning table · live lookup from saved .pkl + state features';
+    document.title='Snake RL — Live Q-Learning Table';
+  } else if(p&&p.agent){
+    document.querySelector('h1').textContent='Snake RL — Live feedforward network';
+    document.getElementById('archT').textContent='11 input → 128 relu → 128 relu → 3 Q-values · live DQN weights · real forward passes';
+    document.title='Snake RL — Live Neural Network';
+  }
+}
+
+function fillQMeta(p){
+  var model=p.model||{};
+  var lookup=p.q_lookup||{};
+  var move=p.move||{};
+  var qs=p.decision.q_values||[0,0,0], labs=p.decision.q_labels||OUT_LABELS;
+  var ci=p.decision.chosen_action_index!=null?p.decision.chosen_action_index:labs.indexOf(p.decision.chosen_action);
+  if(ci<0) ci=0;
+  var moveNum=p.decision.chosen_action_number||ci+1;
+  var actionCount=p.decision.action_count||3;
+  var chosenQ=(lookup.chosen_q!=null?lookup.chosen_q:qs[ci]);
+  var trained=model.training_steps_display||'—';
+  var entry=lookup.table_index_display||'—';
+  var gameMove='ep '+((move.episode_number!=null)?move.episode_number:'—')+' · step '+((move.episode_step!=null)?move.episode_step:'—');
+  var actionLine=(p.decision.chosen_action||'—')+' ('+moveNum+'/'+actionCount+') · Q '+chosenQ.toFixed(2);
+  var stateKey=lookup.state_key_display||'—';
+  var note=(lookup.in_pkl?'From .pkl':'New state')+(p.decision.explored?' · ε explore':' · greedy');
+
+  function set(id,v){var el=document.getElementById(id);if(el)el.textContent=v}
+
+  set('qModelFile',model.file||'—');
+  set('qModelSteps',trained+(model.saved_at?' · saved '+model.saved_at:''));
+  set('qTableIndex',entry);
+  set('qMoveStep',gameMove+' · live #'+((move.live_step_id!=null)?move.live_step_id:'—'));
+  set('qChosenMove',actionLine);
+  set('qStateKey',stateKey);
+  set('qDecisionNote',note+' · '+(p.decision.reason||''));
+
+  set('sideModel',model.file||'—');
+  set('sideTrained',trained);
+  set('sideEntry',entry);
+  set('sideMove',gameMove);
+  set('sideAction',actionLine);
+  set('sideStateKey',stateKey);
+
+  set('metricModel',model.file||'—');
+  set('metricEntry',entry);
+  set('metricMove',moveNum+' of '+actionCount);
+
+  set('qtSize',p.q_table?p.q_table.size:0);
+  set('qtLoaded',p.q_table&&p.q_table.loaded_size!=null?p.q_table.loaded_size:0);
+}
+
+function renderQ(p){
+  fillQMeta(p);
+  var qs=p.decision.q_values||[0,0,0], labs=p.decision.q_labels||OUT_LABELS;
+  var ci=p.decision.chosen_action_index!=null?p.decision.chosen_action_index:labs.indexOf(p.decision.chosen_action);
+  if(ci<0) ci=0;
+
+  var grid=document.getElementById('stateGrid'); grid.innerHTML='';
+  var labels=p.state.labels_display||p.state.labels||[];
+  (p.state.vector||[]).forEach(function(v,i){
+    var d=document.createElement('div');
+    d.className='chip'+(v>0.5?' on':'');
+    d.textContent=(labels[i]||'f'+i)+': '+(v>0.5?'ON':'off');
+    grid.appendChild(d);
+  });
+  var bars=document.getElementById('qBars'); bars.innerHTML='';
+  var mx=Math.max.apply(null,qs.map(Math.abs).concat([1]));
+  labs.forEach(function(lbl,i){
+    var row=document.createElement('div');
+    row.className='qrow'+(p.decision.chosen_action===lbl?' chosen':'');
+    row.innerHTML='<span class="lbl">'+lbl+'</span><div class="track"><div class="fill" style="width:'+(Math.abs(qs[i])/mx*100).toFixed(1)+'%"></div></div><span class="val">'+qs[i].toFixed(2)+'</span>';
+    bars.appendChild(row);
+  });
+  document.getElementById('predT').textContent=p.decision.chosen_action+' · Q '+qs[ci].toFixed(2);
+}
+
+function applyPayload(p){
+  if(!p||!p.agent) return;
+  var isNewStep=beginLiveStep(p);
+  if(!isNewStep) lastPayload=p;
+  document.getElementById('statusB').textContent='Live';
+  document.getElementById('statusB').className='badge live';
+  document.getElementById('scoreV').textContent=p.board?p.board.score:0;
+  document.getElementById('stepV').textContent=p.board?p.board.steps:0;
+  document.getElementById('bestV').textContent=p.session?p.session.best_score:0;
+  document.getElementById('avgV').textContent=p.session?p.session.avg_score:'—';
+  document.getElementById('actV').textContent=p.decision?p.decision.chosen_action:'—';
+  document.getElementById('explV').textContent=p.decision&&p.decision.explored?'⚡ Random exploration (ε)':'✓ Greedy policy';
+  document.getElementById('epsHud').textContent=p.training?p.training.epsilon.toFixed(3):'—';
+  var pill=document.getElementById('modePill');
+  if(p.agent.learning_mode==='training'){pill.textContent='TRAINING';pill.className='pill train'}
+  else{pill.textContent='AUTONOMOUS';pill.className='pill auto'}
+  if(p.training&&p.training.replay_size!=null)
+    document.getElementById('replayV').textContent=p.training.replay_size+' / '+p.training.replay_capacity;
+  if(p.training&&p.training.last_loss!=null)
+    document.getElementById('lossV').textContent=Number(p.training.last_loss).toFixed(4);
+  drawSnake(p);
+  setAgentModeUI(p);
+  if(p.agent.type==='q_learning'){
+    document.getElementById('tabQ').classList.add('active');
+    document.getElementById('tabDqn').classList.remove('active');
+    document.getElementById('qPanel').style.display='block';
+    document.getElementById('nnp').style.display='none';
+    renderQ(p);
+  } else {
+    document.getElementById('tabDqn').classList.add('active');
+    document.getElementById('tabQ').classList.remove('active');
+    document.getElementById('qPanel').style.display='none';
+    document.getElementById('nnp').style.display='block';
+    if(p.network&&p.network.activations){
+      if(!isNewStep){
+        setDisplayFromPayload(p);
+        if(!playing) draw();
+      }
+    }
+  }
+}
+
+function connectSSE(){
+  if(window._es) window._es.close();
+  var es=new EventSource('/stream');
+  window._es=es;
+  es.onmessage=function(ev){try{applyPayload(JSON.parse(ev.data))}catch(e){}};
+  es.onerror=function(){
+    document.getElementById('statusB').textContent='Reconnecting…';
+    document.getElementById('statusB').className='badge wait';
+    es.close(); setTimeout(connectSSE,1500);
+  };
+}
+function poll(){fetch('/snapshot').then(function(r){return r.json()}).then(function(p){if(p&&p.agent)applyPayload(p)}).catch(function(){})}
+
+document.getElementById('playB').onclick=function(){playing=!playing;this.textContent=playing?'Pause':'Play';this.setAttribute('aria-label',playing?'pause':'play')};
+document.getElementById('stepB').onclick=function(){newCycle()};
+document.getElementById('reconB').onclick=function(){connectSSE();fetchWeights();poll()};
+document.getElementById('wtsB').onclick=fetchWeights;
+document.getElementById('spd').oninput=function(){speed=Number(this.value);document.getElementById('spdO').textContent='×'+speed.toFixed(1)};
+document.getElementById('tabDqn').onclick=function(){
+  document.getElementById('tabDqn').classList.add('active');document.getElementById('tabQ').classList.remove('active');
+  document.getElementById('nnp').style.display='block';document.getElementById('qPanel').style.display='none';layout();
+};
+document.getElementById('tabQ').onclick=function(){
+  document.getElementById('tabQ').classList.add('active');document.getElementById('tabDqn').classList.remove('active');
+  document.getElementById('qPanel').style.display='block';document.getElementById('nnp').style.display='none';
+  if(lastPayload&&lastPayload.agent&&lastPayload.agent.type==='q_learning') renderQ(lastPayload);
+};
+
+if(REDU){playing=false;document.getElementById('playB').textContent='Play'}
+DISPLAY[1]=Array.from({length:TOP},function(_,i){return i});
+DISPLAY[2]=Array.from({length:TOP},function(_,i){return i});
+layout(); fetchWeights(); connectSSE(); setInterval(poll,400); requestAnimationFrame(frame);
+if(window.ResizeObserver) new ResizeObserver(layout).observe(panel);
+})();
+</script>
+</body>
+</html>
