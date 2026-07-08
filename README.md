@@ -1,42 +1,103 @@
-# Snake Neural Playground
+<p align="center">
+  <img src="docs/images/dashboard-dqn.png" alt="Snake Neural Playground dashboard with DQN agent" width="920">
+</p>
 
-[![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-ee4c2c.svg)](https://pytorch.org/)
+<h1 align="center">Snake Neural Playground</h1>
 
-Train, battle, and **watch AI agents play Snake** — with a pygame dashboard and a live browser visualization that syncs every game step to the neural network or Q-table lookup.
+<p align="center">
+  <strong>Train, battle, and watch AI agents play Snake — with a live neural-network view synced to every move.</strong>
+</p>
 
-**Repository:** [github.com/Sheheryargit/snake-neural-playground](https://github.com/Sheheryargit/snake-neural-playground)
+<p align="center">
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.9%2B-blue.svg" alt="Python 3.9+"></a>
+  <a href="https://pytorch.org/"><img src="https://img.shields.io/badge/PyTorch-2.x-ee4c2c.svg" alt="PyTorch"></a>
+  <a href="https://www.pygame.org/"><img src="https://img.shields.io/badge/pygame-2.6-green.svg" alt="Pygame"></a>
+  <a href="https://github.com/Sheheryargit/snake-neural-playground"><img src="https://img.shields.io/badge/repo-snake--neural--playground-181717?logo=github" alt="GitHub"></a>
+</p>
 
----
-
-## Overview
-
-Snake Neural Playground is a reinforcement learning lab built around a lightweight Snake environment. It ships with multiple agent types (from random baselines to deep Q-networks), headless training scripts, saved model checkpoints, and an interactive arena for comparing agents in real time.
-
-The standout feature is the **live neural visualization**: open a browser panel that streams each decision from the dashboard — animating DQN forward passes or showing exactly which `.pkl` Q-table row and action the agent used.
-
----
-
-## Features
-
-- **Snake environment** — configurable board size, 11-dim (simple) or 24-dim (advanced) state vectors
-- **7 playable agents** — Random, Greedy, Q-Learning, DQN, Hamiltonian, Hybrid Hamiltonian, Manual
-- **Pygame dashboard** — speed control, pause, board resize, battle mode, presentation mode
-- **Training / Autonomous toggle** — explore with ε-greedy or run a frozen greedy policy
-- **Live browser viz** — SSE stream at `http://127.0.0.1:8765/` with step-synced animations
-- **Q-table inspector** — model file, table row index, state key, and chosen action (1–3) per step
-- **Saved models** — pre-trained Q-Learning and DQN checkpoints included
+<p align="center">
+  <a href="#-screenshots">Screenshots</a> ·
+  <a href="#-quick-start">Quick Start</a> ·
+  <a href="#-agents">Agents</a> ·
+  <a href="#-live-visualization">Live Viz</a> ·
+  <a href="#-training">Training</a>
+</p>
 
 ---
 
-## Quick Start
+## What is this?
+
+**Snake Neural Playground** is a reinforcement learning lab for the classic Snake game. It combines:
+
+- A **pygame dashboard** for running agents, tuning speed, battling head-to-head, and inspecting model stats
+- **Headless training** for tabular Q-Learning and deep Q-networks
+- A **live browser visualization** that streams every game step over SSE — animating DQN forward passes or showing exactly which `.pkl` Q-table row the agent looked up
+
+Perfect for learning how RL agents perceive state, choose actions, and improve over time — with visuals, not just logs.
+
+---
+
+## ✨ Features
+
+| | |
+|---|---|
+| 🎮 **7 agents** | Random, Greedy, Q-Learning, DQN, Hamiltonian, Hybrid, Manual |
+| 📊 **Rich dashboard** | Simple & advanced UI, battle mode, presentation mode, PNG export |
+| 🧠 **Live neural viz** | Step-synced DQN pulse animation at `localhost:8765` |
+| 📋 **Q-table inspector** | Model file, table row, state key, action (1–3) per step |
+| 💾 **Pre-trained models** | `q_learning_10m.pkl` and `dqn_11_state.pt` included |
+| ⚙️ **Configurable board** | Resize grid, training/autonomous toggle, ε-greedy control |
+
+---
+
+## 📸 Screenshots
+
+### Dashboard — DQN agent (Advanced UI)
+
+<p align="center">
+  <img src="docs/images/dashboard-dqn.png" alt="DQN dashboard with game board, agent picker, and model results" width="900">
+</p>
+
+<p align="center"><em>Run agents, inspect training stats, and open the live neural view — all from one arena.</em></p>
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/images/dashboard-qlearning.png" alt="Q-Learning dashboard" width="100%">
+      <p align="center"><strong>Q-Learning</strong><br><sub>Tabular RL with live ε and session stats</sub></p>
+    </td>
+    <td width="50%">
+      <img src="docs/images/dashboard-advanced.png" alt="Advanced dashboard with charts" width="100%">
+      <p align="center"><strong>Advanced mode</strong><br><sub>Charts, brain tab, and deep metrics</sub></p>
+    </td>
+  </tr>
+</table>
+
+### Live browser visualization
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/images/neural-dqn.png" alt="DQN neural network live visualization" width="100%">
+      <p align="center"><strong>DQN Network</strong><br><sub>Inputs → hidden layers → Q-values, synced per step</sub></p>
+    </td>
+    <td width="50%">
+      <img src="docs/images/neural-qtable.png" alt="Q-Learning table live visualization" width="100%">
+      <p align="center"><strong>Q-Learning Table</strong><br><sub>.pkl row lookup, state features, and Q bars</sub></p>
+    </td>
+  </tr>
+</table>
+
+---
+
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Python 3.9+ (3.10+ recommended)
-- macOS / Linux / Windows
+- Python 3.9+
+- macOS, Linux, or Windows
 
-### Installation
+### Install
 
 ```bash
 git clone https://github.com/Sheheryargit/snake-neural-playground.git
@@ -55,192 +116,146 @@ pip install -e .
 python scripts/watch_agents.py
 ```
 
+### Essential controls
+
 | Key | Action |
 |-----|--------|
-| `1`–`6` | Select agent (Random, Greedy, Q-Learn, DQN, Hamilton, Hybrid) |
+| `1`–`6` | Select agent |
 | `H` | Play manually |
-| `N` | Open live neural / Q-table visualization in browser |
-| `M` | Toggle Training ↔ Autonomous (Q-Learn & DQN) |
+| `N` | Open live neural / Q-table view in browser |
+| `M` | Toggle Training ↔ Autonomous |
 | `B` | Battle mode |
-| `SPACE` | Pause |
-| `R` | Reset episode |
-| `S` | Save current model |
 | `TAB` | Simple ↔ Advanced UI |
-| `+` / `-` | Adjust game speed |
+| `SPACE` | Pause · `R` Reset · `S` Save model |
 
-### Open the live visualization
+---
+
+## 🧠 Live Visualization
 
 1. Press `3` (Q-Learning) or `4` (DQN)
-2. Press `N` or click **Neural Net** in the control bar
-3. Browser opens at `http://127.0.0.1:8765/`
+2. Press `N` or click **Neural Net**
+3. Browser opens at **`http://127.0.0.1:8765/`**
 
-- **DQN** — animated forward pass: inputs → hidden layers → Q-values
-- **Q-Learning** — live `.pkl` lookup: model file, table row, state key, action
+| Mode | What you see |
+|------|----------------|
+| **DQN** | 11 input neurons light up → pulses through 128→128 hidden → output Q-values |
+| **Q-Learning** | Which `.pkl` file, table row (`142 / 256`), state key, and chosen action |
 
----
-
-## Agents
-
-| # | Agent | Type | Best score (12×12) | Notes |
-|---|-------|------|-------------------|-------|
-| 1 | Random | Baseline | ~15 | Uniform random turns |
-| 2 | Greedy Food | Rule-based | ~68 | Chases food, one-step lookahead |
-| 3 | Q-Learning | Tabular RL | ~45 | `q_learning_10m.pkl` — 10M training steps |
-| 4 | DQN | Deep RL | ~44 | `dqn_11_state.pt` — 11→128→128→3 MLP |
-| 5 | Hamiltonian | Planner | 141 | Full-board Hamiltonian cycle |
-| 6 | Hybrid Hamiltonian | Planner | 141 | Cycle + safe food shortcuts |
-| 7 | Manual | Human | — | Arrow keys / WASD (`H`) |
+Each snake step triggers one fresh forward-pass animation — no looping demo data.
 
 ---
 
-## State Representation
+## 🤖 Agents
 
-Agents use **relative** actions (`STRAIGHT`, `RIGHT`, `LEFT`) and an 11-feature **simple state** (used by Q-Learning and DQN):
+| # | Agent | Type | Best (12×12) | Model |
+|---|-------|------|-------------|-------|
+| 1 | Random | Baseline | ~15 | — |
+| 2 | Greedy Food | Rule-based | ~68 | — |
+| 3 | Q-Learning | Tabular RL | ~45 | `q_learning_10m.pkl` |
+| 4 | DQN | Deep RL | ~44 | `dqn_11_state.pt` |
+| 5 | Hamiltonian | Planner | 141 | — |
+| 6 | Hybrid Hamiltonian | Planner | 141 | — |
+| 7 | Manual | Human | — | Arrow keys / WASD |
+
+---
+
+## 📐 State & Rewards
+
+**11-dim simple state** (used by Q-Learning & DQN):
 
 | Index | Feature |
 |-------|---------|
 | 0–2 | Danger straight / right / left |
-| 3–6 | Current direction (left, right, up, down) |
-| 7–10 | Food direction (left, right, up, down) |
+| 3–6 | Direction left / right / up / down |
+| 7–10 | Food left / right / up / down |
 
-An **advanced 24-feature state** is also available (open space, reachability, trap detection) for future agents.
-
----
-
-## Reward Structure
-
-| Event | Reward |
-|-------|--------|
-| Eat food | `+10` |
-| Move closer to food | `+0.05` |
-| Move farther from food | `-0.05` |
-| Per-step penalty | `-0.01` |
-| Wall / self collision | `-10` |
-| Fill entire board | `+100` |
+**Rewards:** `+10` eat food · `-10` collision · `-0.01` per step · `+100` fill board
 
 ---
 
-## Training
-
-### Q-Learning (headless)
+## 🏋️ Training
 
 ```bash
+# Q-Learning — 10M steps
 python scripts/train_q_learning.py --steps 10000000
-```
 
-| Hyperparameter | Value |
-|----------------|-------|
-| Learning rate (α) | 0.1 |
-| Discount (γ) | 0.9 |
-| ε decay | 0.995 per episode |
-| Min ε | 0.05 |
-
-Output: `models/q_learning_10m.pkl`
-
-### DQN (headless)
-
-```bash
+# DQN — 1M steps
 python scripts/train_dqn.py --steps 1000000
-```
 
-| Hyperparameter | Value |
-|----------------|-------|
-| Architecture | 11 → 128 → 128 → 3 (ReLU) |
-| Optimizer | Adam, lr = 5×10⁻⁴ |
-| Replay buffer | 100,000 |
-| Batch size | 128 |
-| γ | 0.95 |
-| Target network update | every 5,000 gradient steps |
-
-Output: `models/dqn_11_state.pt`
-
-### Inspect a saved Q-table
-
-```bash
+# Inspect a saved Q-table
 python scripts/inspect_pkl.py models/q_learning_10m.pkl
 ```
 
----
+<details>
+<summary><strong>Hyperparameters</strong></summary>
 
-## Project Structure
+**Q-Learning:** α=0.1 · γ=0.9 · ε decay 0.995/ep · min ε=0.05
 
-```
-snake-neural-playground/
-├── src/snake_rl/
-│   ├── agents/          # All agent implementations
-│   ├── core/            # Metrics, replay memory, pathfinding
-│   └── envs/            # SnakeEnv
-├── scripts/
-│   ├── watch_agents.py  # Main pygame dashboard
-│   ├── train_q_learning.py
-│   ├── train_dqn.py
-│   └── ui/              # Dashboard layout, neural bridge, payloads
-├── web/
-│   └── neural-network-live.html   # Live browser visualization
-├── models/              # Saved checkpoints and training logs
-├── requirements.txt
-└── pyproject.toml
-```
+**DQN:** 11→128→128→3 · Adam 5×10⁻⁴ · replay 100k · batch 128 · γ=0.95 · target update every 5k steps
+
+</details>
 
 ---
 
-## Architecture
+## 🏗️ Architecture
 
 ```
 ┌─────────────────────┐     SSE / HTTP      ┌──────────────────────────┐
 │  watch_agents.py    │ ──────────────────► │  neural-network-live.html │
 │  (pygame dashboard) │   localhost:8765    │  (browser visualization)  │
 └─────────┬───────────┘                     └──────────────────────────┘
-          │
           ▼
-┌─────────────────────┐
-│  SnakeEnv           │  11-dim state, relative actions
-│  QLearningAgent     │  Q-table lookup → 3 actions
-│  DQNAgent           │  MLP forward pass → Q-values
-└─────────────────────┘
+   SnakeEnv → QLearningAgent / DQNAgent
 ```
 
-Each game step publishes a JSON payload (`step_id`, board, state vector, Q-values, activations, `.pkl` lookup metadata) over Server-Sent Events.
+Each step publishes JSON: `step_id`, board, state vector, Q-values, activations, and `.pkl` lookup metadata.
 
 ---
 
-## Development
+## 📁 Project Structure
 
-### Run environment smoke test
-
-```bash
-python scripts/test_env.py
+```
+snake-neural-playground/
+├── src/snake_rl/          # Environment, agents, replay memory
+├── scripts/
+│   ├── watch_agents.py    # Main dashboard
+│   ├── train_*.py         # Headless training
+│   └── ui/                # Dashboard + neural bridge
+├── web/
+│   └── neural-network-live.html
+├── docs/images/           # README screenshots
+└── models/                # Checkpoints & logs
 ```
 
-### Key dependencies
+---
 
-- [NumPy](https://numpy.org/) — state vectors and Q-table math
-- [Pygame](https://www.pygame.org/) — dashboard UI
-- [PyTorch](https://pytorch.org/) — DQN training and inference
+## 🛠️ Development
+
+```bash
+python scripts/test_env.py                              # Smoke test
+python scripts/capture_readme_screenshots.py            # Regenerate README images
+```
+
+Regenerating screenshots requires `pip install playwright && playwright install chromium`.
 
 ---
 
 ## Roadmap
 
+- [x] README screenshots
 - [ ] CI pipeline for training smoke tests
-- [ ] GIF demo in README
-- [ ] Docker / one-click setup
+- [ ] GIF / video demo
+- [ ] Docker one-click setup
 - [ ] Advanced-state DQN agent
 
 ---
 
 ## Contributing
 
-Issues and pull requests are welcome. Please open an issue first for large changes.
+Issues and pull requests are welcome on [GitHub](https://github.com/Sheheryargit/snake-neural-playground).
 
 ---
 
-## Author
-
-**Sheheryar** — [github.com/Sheheryargit](https://github.com/Sheheryargit)
-
----
-
-## Acknowledgments
-
-Built as a hands-on RL project exploring tabular Q-learning, deep Q-networks, and real-time decision visualization for the classic Snake game.
+<p align="center">
+  Built by <a href="https://github.com/Sheheryargit">Sheheryar</a> · Exploring tabular Q-learning, deep Q-networks, and real-time RL visualization
+</p>

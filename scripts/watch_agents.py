@@ -326,7 +326,9 @@ def publish_neural_snapshot(
         return
     state = decision_state
     if state is None:
-        state = episode.get("decision_state") or episode.get("state")
+        state = episode.get("decision_state")
+    if state is None:
+        state = episode.get("state")
     if state is None:
         return
     demo.nn_step += 1
