@@ -16,12 +16,25 @@
 </p>
 
 <p align="center">
+  <a href="#-demo-video">Demo Video</a> ·
   <a href="#-screenshots">Screenshots</a> ·
   <a href="#-quick-start">Quick Start</a> ·
   <a href="#-agents">Agents</a> ·
   <a href="#-live-visualization">Live Viz</a> ·
   <a href="#-training">Training</a>
 </p>
+
+---
+
+## 🎬 Demo Video
+
+<p align="center">
+  <video src="docs/snake-neural-playground-demo.mp4" controls width="920">
+    Your browser does not support embedded video. <a href="docs/snake-neural-playground-demo.mp4">Download the demo</a>.
+  </video>
+</p>
+
+<p align="center"><em>A quick tour of the agents, dashboard, and live AI visualization.</em></p>
 
 ---
 
@@ -244,7 +257,7 @@ Regenerating screenshots requires `pip install playwright && playwright install 
 
 - [x] README screenshots
 - [ ] CI pipeline for training smoke tests
-- [ ] GIF / video demo
+- [x] GIF / video demo
 - [ ] Docker one-click setup
 - [ ] Advanced-state DQN agent
 
