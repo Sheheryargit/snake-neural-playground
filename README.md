@@ -29,9 +29,13 @@
 ## 🎬 Demo Video
 
 <p align="center">
-  <video src="docs/snake-neural-playground-demo.mp4" controls width="920">
-    Your browser does not support embedded video. <a href="docs/snake-neural-playground-demo.mp4">Download the demo</a>.
-  </video>
+  <a href="https://github.com/Sheheryargit/snake-neural-playground/blob/main/docs/snake-neural-playground-demo.mp4">
+    <img src="docs/images/demo-preview.gif" alt="Snake Neural Playground demo preview — click to watch the full 60s video" width="920">
+  </a>
+</p>
+
+<p align="center">
+  <strong>▶ <a href="https://github.com/Sheheryargit/snake-neural-playground/blob/main/docs/snake-neural-playground-demo.mp4">Watch full demo video (60s)</a></strong>
 </p>
 
 <p align="center"><em>A quick tour of the agents, dashboard, and live AI visualization.</em></p>
